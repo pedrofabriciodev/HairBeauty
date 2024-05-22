@@ -11,7 +11,7 @@ const Login = () => {
     const handleForgotPassword = () => {navigation.navigate('PasswordRecovery');}
     const [isSelected, setSelected] = useState(false)
     const goHome = () => {navigation.navigate('Home');}
-
+    const handleRegisterAccount = () => {navigation.navigate('RegisterAccount')}
 
 
   return (
@@ -61,7 +61,9 @@ const Login = () => {
 
         <View style={styles.lastView}>
           <Text style={styles.registerText}>Ainda não tem uma conta?</Text>
-          <Text style={{color:'black', fontSize:17}}>Cadastre-se!</Text>
+          <TouchableOpacity onPress={handleRegisterAccount}>
+            <Text style={{color:'black', fontSize:17}}>Cadastre-se!</Text>
+          </TouchableOpacity>
         </View>
       </View>
     </SafeAreaView>
