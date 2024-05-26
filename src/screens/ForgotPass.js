@@ -1,23 +1,37 @@
 import React, { useState } from 'react';
+
 import { Text, SafeAreaView, View, TextInput, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 
 import { useNavigation } from '@react-navigation/native';
 
 import GradientButton from '../components/ButtonGradient'
 
+import {auth} from '../services/firebaseConfig'
+import { sendPasswordResetEmail } from 'firebase/auth';
+
 const ForgotPass = () => {
-   const navigation = useNavigation();
+  const navigation = useNavigation();
 
-    const handleLogin = () => {
-      navigation.navigate('Login');
+  const [email, setEmail] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
+
+
+  const handleLogin = () => {
+    navigation.navigate('Login');
+  }
+
+  const handleResetPassword = async () => {
+    if (!email) {
+      Alert.alert('Preencha todos os campos');
+      return;
+  }
+    try {
+        await sendPasswordResetEmail(auth, email);
+        Alert.alert('Um e-mail de redefinição de senha foi enviado para ' + email);
+    } catch (error) {
+        setErrorMessage(error.message);
     }
-
-    const handleResetPassword = () => {
-    Alert.alert(
-      'Redefinir Senha',
-      'Um e-mail de redefinição de senha foi enviado para o seu endereço de e-mail cadastrado.',
-      [{ text: 'OK', onPress: () => console.log('SENHA REDEFINIDA COM SUCESSO') }]
-    );
   };
 
 
@@ -28,16 +42,16 @@ const ForgotPass = () => {
         <View style={{marginBottom:0}}>
           <View style={styles.passwordContainer}> 
             <Text style={styles.redefinePassword}>Redefinir Senha</Text>      
-            <Text style={styles.cpf}>Informe o seu cpf</Text>      
+            <Text style={styles.email}>Informe o seu email</Text>      
           </View>
 
           <TextInput
             style={styles.input}
-            placeholder="   CPF"
-            placeholderTextColor='white'
-            maxLength={11} // Corrigido para um número
-            keyboardType='numeric'
-            inputMode='numeric'
+            placeholder="   Email"
+            value={email}
+            onChangeText={setEmail}
+            placeholderTextColor="white"
+            keyboardType="email-address"
           />
         </View>
 
@@ -80,7 +94,7 @@ const styles = StyleSheet.create({
     marginTop:-2
   },
 
-  cpf:{
+  email:{
     fontSize:18,
     color:'white',
     marginBottom:39,
