@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
+
 import { Text, SafeAreaView, View, TextInput, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import GradientButton from '../components/ButtonGradient';
+
 import { auth } from '../services/firebaseConfig';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 
@@ -44,7 +46,7 @@ const RegisterAccount = () => {
             return;
         }
         if (!email || !password || !nomeCompleto || !cpf || !confirmPassword) {
-            setErrorMessage('Preencha todos os campos');
+            Alert.alert('Preencha todos os campos');
             return;
         }
         try {
@@ -65,6 +67,7 @@ const RegisterAccount = () => {
                         style={styles.input}
                         placeholder="   Nome Completo"
                         value={nomeCompleto}
+                        onChangeText={setNomeCompleto}
                         placeholderTextColor="white"
                         keyboardType="default"
                     />
@@ -72,6 +75,7 @@ const RegisterAccount = () => {
                         style={styles.input}
                         placeholder="   CPF"
                         value={cpf}
+                        onChangeText={setCpf}
                         placeholderTextColor="white"
                         maxLength={11}
                         keyboardType="numeric"
@@ -108,7 +112,7 @@ const RegisterAccount = () => {
                     <GradientButton onPress={handleRegister} title="Cadastre-se" colors={['#f3f3f3', '#b6b6b6']} />
 
                     <View style={{ alignItems: 'center', marginTop: 18 }}>
-                        <Text style={styles.registerText}>Já tem uma conta?</Text>
+                        <Text style={styles.alreadyText}>Já tem uma conta?</Text>
                         <TouchableOpacity style={styles.lastView} onPress={handleLogin}>
                             <Text style={{ color: 'black', fontSize: 17 }}>Entre</Text>
                         </TouchableOpacity>
@@ -137,7 +141,7 @@ const styles = StyleSheet.create({
         opacity: 0.6,
         marginBottom: 40,
     },
-    registerText: {
+    alreadyText: {
         color: 'white',
         fontSize: 17,
         marginTop: 20,

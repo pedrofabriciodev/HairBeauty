@@ -1,10 +1,16 @@
 import React, { useState } from 'react';
-import { Text, SafeAreaView, View, TextInput, Image, StyleSheet, TouchableOpacity } from 'react-native';
+
+import { Text, SafeAreaView, View, TextInput, Image, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import {CheckBox} from 'react-native-elements'
 
 import { useNavigation } from '@react-navigation/native';
 
 import GradientButton from '../components/ButtonGradient';
+
+
+import { auth } from '../services/firebaseConfig';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+
 
 const Login = () => {
     const navigation = useNavigation();
@@ -13,6 +19,25 @@ const Login = () => {
     const goHome = () => {navigation.navigate('Home');}
     const handleRegisterAccount = () => {navigation.navigate('RegisterAccount')}
 
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+
+
+    const handleLoginUser = async () => {
+
+      if (!email || !password) {
+        Alert.alert('Preencha todos os campos');
+        return;
+    }
+    try {
+        await signInWithEmailAndPassword(auth, email, password);
+        navigation.navigate('Home');
+    } catch (error) {
+        console.log('Error login:', error);
+        setErrorMessage(error.message);
+    }
+
+    };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -25,17 +50,19 @@ const Login = () => {
 
         <TextInput
           style={styles.input}
-          placeholder="   CPF"
-          placeholderTextColor='white'
-          maxLength={11} 
-          keyboardType='numeric'
-          inputMode='numeric'
+          placeholder="   Email"
+          value={email}
+          onChangeText={setEmail}
+          placeholderTextColor="white"
+          keyboardType="email-address"
         />
 
         <TextInput
           style={styles.input}
           placeholder="   Senha"
-          placeholderTextColor='white'
+          value={password}
+          onChangeText={setPassword}
+          placeholderTextColor="white"
           secureTextEntry
         />
 
@@ -57,7 +84,7 @@ const Login = () => {
         </TouchableOpacity>
         </View>
         
-        <GradientButton activeOpacity='0.7' title='Login' colors={['#f3f3f3', '#b6b6b6']} onPress={goHome}/>
+        <GradientButton activeOpacity='0.7' title='Login' colors={['#f3f3f3', '#b6b6b6']} onPress={handleLoginUser}/>
 
         <View style={styles.lastView}>
           <Text style={styles.registerText}>Ainda não tem uma conta?</Text>
