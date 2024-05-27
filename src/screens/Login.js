@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+
+import * as LocalAuthentication from 'expo-local-authentication';
 
 import { Text, SafeAreaView, View, TextInput, Image, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import {CheckBox} from 'react-native-elements'
@@ -24,6 +26,39 @@ const Login = () => {
     const [password, setPassword] = useState('');
 
 
+    //BIOMETRIA
+  async function verifyAvailableAuthentication(){
+    const compatible = await LocalAuthentication.hasHardwareAsync();
+    console.log(compatible)
+
+    const types = await LocalAuthentication.supportedAuthenticationTypesAsync();
+    console.log(types.map(type => LocalAuthentication.AuthenticationType[type]))
+  }
+
+  async function handleBiometricAuthentication() {
+    const isBiometricEnrolled = await LocalAuthentication.isEnrolledAsync();
+    if (!isBiometricEnrolled) {
+        Alert.alert('Biometria não configurada', 'Por favor, configure a biometria no seu dispositivo.');
+        return;
+    }
+
+    const authResult = await LocalAuthentication.authenticateAsync({
+        promptMessage: 'Login com Biometria',
+        fallbackLabel: 'Biometria não reconhecida'
+    });
+
+    if (authResult.success) {
+        navigation.navigate('Home');
+    } else {
+        Alert.alert('Erro', 'A autenticação biométrica falhou.');
+    }
+}
+
+  useEffect(() => {
+    verifyAvailableAuthentication();
+     }, []);
+
+
     const handleLoginUser = async () => {
 
       if (!email || !password) {
@@ -32,19 +67,21 @@ const Login = () => {
     }
     try {
         await signInWithEmailAndPassword(auth, email, password);
-        navigation.navigate('Home');
         if(!isSelected){
           setPassword('');
         }
 
     } catch (error) {
-      if (error.code === 'auth/invalid-credential') {
-          Alert.alert('Erro', 'Usuario ou senha inválidos.');
-      }
+        if (error.code === 'auth/invalid-credential') {
+            Alert.alert('Erro', 'Usuario ou senha inválidos.');
+        }
 
         console.log('Error login:', error);
         setErrorMessage(error.message);
-    }
+      }
+
+    //chama a biometria
+    handleBiometricAuthentication();
 
     };
 
