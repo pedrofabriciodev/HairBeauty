@@ -14,10 +14,11 @@ import { signInWithEmailAndPassword } from 'firebase/auth';
 
 const Login = () => {
     const navigation = useNavigation();
-    const handleForgotPassword = () => {navigation.navigate('PasswordRecovery');}
-    const [isSelected, setSelected] = useState(false)
-    const goHome = () => {navigation.navigate('Home');}
+    const handleForgotPassword = () => {navigation.navigate('PasswordRecovery')}
     const handleRegisterAccount = () => {navigation.navigate('RegisterAccount')}
+
+
+    const [isSelected, setSelected] = useState(false);
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -32,7 +33,15 @@ const Login = () => {
     try {
         await signInWithEmailAndPassword(auth, email, password);
         navigation.navigate('Home');
+        if(!isSelected){
+          setPassword('');
+        }
+
     } catch (error) {
+      if (error.code === 'auth/invalid-credential') {
+          Alert.alert('Erro', 'Usuario ou senha inválidos.');
+      }
+
         console.log('Error login:', error);
         setErrorMessage(error.message);
     }

@@ -13,8 +13,6 @@ const ForgotPass = () => {
   const navigation = useNavigation();
 
   const [email, setEmail] = useState('');
-  const [errorMessage, setErrorMessage] = useState('');
-  const [successMessage, setSuccessMessage] = useState('');
 
 
   const handleLogin = () => {
@@ -40,7 +38,7 @@ const ForgotPass = () => {
       <View style={styles.centeredContainer}>
 
         <View style={{marginBottom:0}}>
-          <View style={styles.passwordContainer}> 
+          <View style={styles.redefinePasswordContainer}> 
             <Text style={styles.redefinePassword}>Redefinir Senha</Text>      
             <Text style={styles.email}>Informe o seu email</Text>      
           </View>
@@ -80,7 +78,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
 
-  passwordContainer:{
+  redefinePasswordContainer:{
     alignItems:'center',
     justifyContent:'center',
 
