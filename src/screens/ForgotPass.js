@@ -26,7 +26,7 @@ const ForgotPass = () => {
   }
     try {
         await sendPasswordResetEmail(auth, email);
-        Alert.alert('Um e-mail de redefinição de senha foi enviado para ' + email);
+        Alert.alert('Um link de confirmação foi enviado para o email cadastrado!!');
     } catch (error) {
         setErrorMessage(error.message);
     }
